@@ -9,6 +9,8 @@ import (
 
 func main() {
 	address := flag.String("address", ":5837", "The address used to listen, such as 127.0.0.1:5837")
+	// 服务类型
+	serverType := flag.String("serverType", "tcp", "The type of server (http ,tcp)")
 
 	options := caches.DefaultOptions()
 	flag.IntVar(&options.MaxEntrySize, "maxEntrySize", options.MaxEntrySize, "The max memory size that entries can use . the unit is GB.")
@@ -28,7 +30,7 @@ func main() {
 	cache.AutoGc()
 	cache.AutoDump()
 	log.Printf("Kafo is runing on %s.", *address)
-	err := services.NewHTTPServer(cache).Run(*address)
+	err := services.NewServer(*serverType,cache).Run(*address)
 	if err != nil {
 		panic(err)
 	}

@@ -78,7 +78,11 @@ func ttlOf(request *http.Request) (int64, error) {
 
 func (hs *HTTPServer) deleteHandler(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	key := params.ByName("key")
-	hs.cache.Delete(key)
+	err := hs.cache.Delete(key)
+	if err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func (hs *HTTPServer) statusHandler(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {

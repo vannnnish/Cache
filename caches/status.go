@@ -6,7 +6,7 @@ type Status struct {
 	ValueSize int64 `json:"valueSize"`
 }
 
-func newStatus() *Status {
+func NewStatus() *Status {
 	return &Status{
 		Count:     0,
 		KeySize:   0,

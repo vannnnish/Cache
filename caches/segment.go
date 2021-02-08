@@ -15,7 +15,7 @@ type segment struct {
 func newSegment(options *Options) *segment {
 	return &segment{
 		Data:    make(map[string]*value, options.MapSizeOfSegment),
-		Status:  newStatus(),
+		Status:  NewStatus(),
 		options: options,
 		lock:    &sync.RWMutex{},
 	}

@@ -78,13 +78,14 @@ func (c *Cache) SetWithTTL(key string, value []byte, ttl int64) error {
 	return c.segmentOf(key).set(key, value, ttl)
 }
 
-func (c *Cache) Delete(key string) {
+func (c *Cache) Delete(key string) error {
 	c.waitForDumping()
 	c.segmentOf(key).delete(key)
+	return nil
 }
 
 func (c *Cache) Status() Status {
-	result := newStatus()
+	result := NewStatus()
 	for _, segment := range c.segments {
 		status := segment.status()
 		result.Count += status.Count
