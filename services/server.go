@@ -7,13 +7,12 @@ const (
 )
 
 type Server interface {
-	Run(address string) error
+	Run() error
 }
 
-func NewServer(serverType string, cache *caches.Cache) Server {
-	if serverType == "tcp" {
-		return NewTcpServer(cache)
+func NewServer(cache *caches.Cache, options Options) (Server, error) {
+	if options.ServerType == "tcp" {
+		return NewTcpServer(cache, &options)
 	}
-	return NewHTTPServer(cache)
+	return NewHTTPServer(cache, &options)
 }
-

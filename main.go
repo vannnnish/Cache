@@ -4,14 +4,21 @@ import (
 	"cache/caches"
 	"cache/services"
 	"flag"
-	"log"
+	"strings"
 )
 
 func main() {
-	address := flag.String("address", ":5837", "The address used to listen, such as 127.0.0.1:5837")
-	// 服务类型
-	serverType := flag.String("serverType", "tcp", "The type of server (http ,tcp)")
+	// 准备服务器的选项配置
+	serverOptions := services.DefaultOptions()
+	flag.StringVar(&serverOptions.Address, "address", serverOptions.Address, "The address used to listen, such as 127.0.0.1:5837")
+	flag.IntVar(&serverOptions.Port, "prot", serverOptions.Port, "The port used to listen ,such as 5837")
+	flag.StringVar(&serverOptions.ServerType, "serverType", serverOptions.ServerType, "The type of server (http ,tcp)")
+	flag.IntVar(&serverOptions.VirtualNodeCount, "virtualNodeCount", serverOptions.VirtualNodeCount, "the number of virtual nodes in consistent hash")
+	flag.IntVar(&serverOptions.UpdateCircleDuration, "updateCircleDuration", serverOptions.UpdateCircleDuration, "The duration between two circle updating operations. The unit is second.")
 
+	cluster := flag.String("cluster", "", "The cluster of servers. One node in cluster will be ok")
+
+	// 准备缓存配置选项
 	options := caches.DefaultOptions()
 	flag.IntVar(&options.MaxEntrySize, "maxEntrySize", options.MaxEntrySize, "The max memory size that entries can use . the unit is GB.")
 	flag.IntVar(&options.MaxGcCount, "maxGcCount", options.MaxGcCount, "The")
@@ -26,12 +33,30 @@ func main() {
 	flag.IntVar(&options.CasSleepTime, "casSleepTime", options.CasSleepTime, "The time of sleep in one cas step. the unit is Microsecond")
 
 	flag.Parse()
+
+	// 从 flag 中解析出集群信息
+	serverOptions.Cluster = nodesInCluster(*cluster)
+
+	// 使用选项配置初始化缓存
 	cache := caches.NewCacheWith(options)
 	cache.AutoGc()
 	cache.AutoDump()
-	log.Printf("Kafo is runing on %s.", *address)
-	err := services.NewServer(*serverType,cache).Run(*address)
+
+	// 使用选项配置初始化服务器
+	server, err := services.NewServer(cache, serverOptions)
 	if err != nil {
 		panic(err)
 	}
+
+	err = server.Run()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func nodesInCluster(cluster string) []string {
+	if cluster == "" {
+		return nil
+	}
+	return strings.Split(cluster, ",")
 }
