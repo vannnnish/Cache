@@ -1,3 +1,5 @@
+github.com/FishGoddess/cachego v0.1.1 h1:lhqlV3U4DWQQktZZk6O8qYdlPPr8pwPJI1dnNYyE8V0=
+github.com/FishGoddess/cachego v0.1.1/go.mod h1:Rq8e1YYKf3nXJut3I60PXiPOty5c/blx0igSlgUbb3U=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da h1:8GUt8eRujhVEGZFFEjBj46YV4rDjvGrNxb0KMWYkL2I=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
